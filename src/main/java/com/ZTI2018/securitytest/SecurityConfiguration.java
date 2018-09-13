@@ -56,12 +56,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
             .dataSource(dataSource)
             .usersByUsernameQuery("select username,password,enabled from users where username = ?")
     		.authoritiesByUsernameQuery("select username,authority from authorities where username = ?");
+        //System.out.println(encoder().encode("user"));
     }
 	
 	@Override
 	public void configure(HttpSecurity httpSecurity) throws Exception {
 		//httpSecurity.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic();
-		httpSecurity.authorizeRequests().anyRequest().authenticated().and().httpBasic();
+		httpSecurity.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic();
 		httpSecurity.csrf().disable();
 	}
 	
