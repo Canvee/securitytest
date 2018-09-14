@@ -44,6 +44,7 @@ public class AppUser {
 //            inverseJoinColumns = @JoinColumn(name = "auth_username")
 //    )
     @OneToMany(mappedBy="appuser",cascade = CascadeType.ALL)//(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("appuser")
     private List<UserAuthority> authorities = new ArrayList<>();
     
     @OneToMany(mappedBy = "appuser")

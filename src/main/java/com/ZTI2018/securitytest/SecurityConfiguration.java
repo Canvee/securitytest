@@ -17,6 +17,7 @@ import org.springframework.security.data.repository.query.SecurityEvaluationCont
 import org.springframework.web.context.WebApplicationContext;
 
 import com.ZTI2018.securitytest.security.CustomUserDetailsService;
+import com.ZTI2018.securitytest.security.UserSecurity;
 
 
 
@@ -62,7 +63,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	@Override
 	public void configure(HttpSecurity httpSecurity) throws Exception {
 		//httpSecurity.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic();
-		httpSecurity.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic();
+		httpSecurity
+			.authorizeRequests()
+				.antMatchers("**/api/users").hasRole("ADMIN")
+				.antMatchers("**/api/users/**").access("@userSecurity.check(authentication,request)")
+				.anyRequest().fullyAuthenticated().and()
+				//.anyRequest().fullyAuthenticated().and()
+			.httpBasic();
 		httpSecurity.csrf().disable();
 	}
 	
@@ -82,5 +89,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	    @Bean
 	    public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
 	        return new SecurityEvaluationContextExtension();
+	    }
+	    
+	    @Bean
+	    public UserSecurity userSecurity() {
+	    	return new UserSecurity();
 	    }
 }
