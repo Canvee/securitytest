@@ -66,7 +66,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 		httpSecurity
 			.authorizeRequests()
 				.antMatchers("**/api/users").hasRole("ADMIN")
-				.antMatchers("**/api/users/**").access("@userSecurity.check(authentication,request)")
+				.antMatchers("/api/users/**").access("@userSecurity.check(authentication,request)")
 				.anyRequest().fullyAuthenticated().and()
 				//.anyRequest().fullyAuthenticated().and()
 			.httpBasic();
