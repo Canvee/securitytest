@@ -56,7 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
             .dataSource(dataSource)
             .usersByUsernameQuery("select username,password,enabled from users where username = ?")
     		.authoritiesByUsernameQuery("select username,authority from authorities where username = ?");
-        //System.out.println(encoder().encode("user"));
+//        System.out.println(encoder().encode("admin"));
     }
 	
 	@Override

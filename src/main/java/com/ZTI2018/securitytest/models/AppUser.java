@@ -2,13 +2,20 @@ package com.ZTI2018.securitytest.models;
 
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "users")
@@ -18,11 +25,30 @@ public class AppUser {
     private long id;
 	
 	private String name;
+	
+	
     @Column(unique = true)
     private String username;
+    
+    @JsonIgnore
     private String password;
     private boolean enabled = true;
     private Date lastLogin;
+    
+//    @OneToMany(mappedBy="username")
+    //@JoinColumn(name="username", nullable=false)
+    
+//    @JoinTable(
+//            name = "users_authorities",
+//            joinColumns = @JoinColumn(name = "username"),
+//            inverseJoinColumns = @JoinColumn(name = "auth_username")
+//    )
+    @OneToMany(mappedBy="appuser",cascade = CascadeType.ALL)//(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<UserAuthority> authorities = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "appuser")
+	@JsonIgnoreProperties("appuser")
+	private List<ItemList> lists = new ArrayList<>();
     
     public AppUser() {
     	
@@ -69,6 +95,14 @@ public class AppUser {
 	}
 	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
+	}
+
+	public List<UserAuthority> getAuthorities() {
+		return authorities;
+	}
+
+	public void setAuthorities(List<UserAuthority> authorities) {
+		this.authorities = authorities;
 	}
     
     
