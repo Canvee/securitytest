@@ -1,7 +1,7 @@
 package com.ZTI2018.securitytest.models;
 
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,10 +22,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "users")
 public class AppUser {
 	@Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "auth_generator")
+	@SequenceGenerator(name="auth_generator", sequenceName = "auth_seq", initialValue=3, allocationSize=1)
     private long id;
 	
-	private String name;
+	private String mail;
 	
 	
     @Column(unique = true)
@@ -33,7 +35,7 @@ public class AppUser {
     @JsonIgnore
     private String password;
     private boolean enabled = true;
-    private Date lastLogin;
+    private Timestamp lastLogin;
     
 //    @OneToMany(mappedBy="username")
     //@JoinColumn(name="username", nullable=false)
@@ -44,7 +46,7 @@ public class AppUser {
 //            inverseJoinColumns = @JoinColumn(name = "auth_username")
 //    )
     @OneToMany(mappedBy="appuser",cascade = CascadeType.ALL)//(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnoreProperties("appuser")
+    //@JsonIgnoreProperties("appuser")
     private List<UserAuthority> authorities = new ArrayList<>();
     
     @OneToMany(mappedBy = "appuser")
@@ -55,9 +57,9 @@ public class AppUser {
     	
     }
     
-    public AppUser(String name, String email, String password) {
-        this.username = email;
-        this.name = name;
+    public AppUser(String username, String mail, String password) {
+        this.username = username;
+        this.mail = mail;
         this.password = password;
     }
     
@@ -67,11 +69,11 @@ public class AppUser {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getName() {
-		return name;
+	public String getMail() {
+		return mail;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setMail(String mail) {
+		this.mail = mail;
 	}
 	public String getUsername() {
 		return username;
@@ -91,10 +93,10 @@ public class AppUser {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-	public Date getLastLogin() {
+	public Timestamp getLastLogin() {
 		return lastLogin;
 	}
-	public void setLastLogin(Date lastLogin) {
+	public void setLastLogin(Timestamp lastLogin) {
 		this.lastLogin = lastLogin;
 	}
 

@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,30 +16,31 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class UserAuthority {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_generator")
+	@SequenceGenerator(name="user_generator", sequenceName = "user_seq", initialValue=4, allocationSize=1)
 	private Long id;
-	
-//	@Column(name="auth_username")
-//	@JsonIgnore
-//    private String username;
-    
+
 	@Column(name = "authority")
 	private String authority;
 	
-	@ManyToOne//(fetch = FetchType.EAGER)//(targetEntity=AppUser.class)
+	//(fetch = FetchType.EAGER)//(targetEntity=AppUser.class)
 //    @JoinColumn(name="username", nullable=false)
 //    @OnDelete(action = OnDeleteAction.CASCADE)
+	@ManyToOne
     @JsonIgnore
 	private AppUser appuser; 
 	
-//	public String getUsername() {
-//		return username;
-//	}
-
-//	public void setUsername(String username) {
-//		this.username = username;
-//	}
-
+	public UserAuthority()
+	{
+		this("ROLE_USER");
+	}
+	
+	public UserAuthority(String authority)
+	{
+		this.authority = authority;
+	}
+	
+	
 	public String getAuthority() {
 		return authority;
 	}

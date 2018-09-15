@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,8 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.ZTI2018.securitytest.filter.TestFilter;
 import com.ZTI2018.securitytest.security.CustomUserDetailsService;
-import com.ZTI2018.securitytest.security.UserSecurity;
+import com.ZTI2018.securitytest.security.WebSecurity;
 
 
 
@@ -65,9 +67,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 		//httpSecurity.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic();
 		httpSecurity
 			.authorizeRequests()
-				.antMatchers("**/api/users").hasRole("ADMIN")
-				.antMatchers("/api/users/**").access("@userSecurity.check(authentication,request)")
+				.antMatchers(HttpMethod.GET, "**/api/users").hasRole("ADMIN")
+				.antMatchers("/user/register**").permitAll()
+				//.antMatchers(HttpMethod.POST, "**/api/users").permitAll().a
+				.antMatchers("/api/users/{userId}/**").access("@webSecurity.checkUserId(authentication,#userId)")
+				//.antMatchers("/api/users/**").access("@webSecurity.check(authentication,request)")
+				.antMatchers("/api/lists/{listId}/**").access("@webSecurity.checkListId(authentication,#listId)")
 				.anyRequest().fullyAuthenticated().and()
+			//.addFilterAfter(testFilter(), BasicAuthenticationFilter.class)
 				//.anyRequest().fullyAuthenticated().and()
 			.httpBasic();
 		httpSecurity.csrf().disable();
@@ -92,7 +99,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	    }
 	    
 	    @Bean
-	    public UserSecurity userSecurity() {
-	    	return new UserSecurity();
+	    public WebSecurity webSecurity() {
+	    	return new WebSecurity();
+	    }
+	    
+	    @Bean 
+	    TestFilter testFilter() {
+	    	return new TestFilter();
 	    }
 }
