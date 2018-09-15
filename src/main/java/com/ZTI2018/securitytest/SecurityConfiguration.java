@@ -67,15 +67,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 		//httpSecurity.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic();
 		httpSecurity
 			.authorizeRequests()
+				// enable registration for all users
+				// TODO make it available only for anonymous users
+				.antMatchers("/user/register").permitAll()
 				.antMatchers(HttpMethod.GET, "**/api/users").hasRole("ADMIN")
-				.antMatchers("/user/register**").permitAll()
-				//.antMatchers(HttpMethod.POST, "**/api/users").permitAll().a
 				.antMatchers("/api/users/{userId}/**").access("@webSecurity.checkUserId(authentication,#userId)")
-				//.antMatchers("/api/users/**").access("@webSecurity.check(authentication,request)")
 				.antMatchers("/api/lists/{listId}/**").access("@webSecurity.checkListId(authentication,#listId)")
 				.anyRequest().fullyAuthenticated().and()
+			// if filter needed
 			//.addFilterAfter(testFilter(), BasicAuthenticationFilter.class)
-				//.anyRequest().fullyAuthenticated().and()
 			.httpBasic();
 		httpSecurity.csrf().disable();
 	}
