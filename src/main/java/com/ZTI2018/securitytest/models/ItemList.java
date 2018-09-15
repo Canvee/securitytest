@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,7 +21,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "lists")
 public class ItemList {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "list_generator")
+	@SequenceGenerator(name="list_generator", sequenceName = "list_seq", initialValue=2, allocationSize=1)
 	private Long ListID;
 	
 	@Column(nullable = false)

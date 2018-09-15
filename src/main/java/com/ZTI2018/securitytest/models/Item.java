@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,7 +22,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 //		  property = "itemID")
 public class Item {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_generator")
+	@SequenceGenerator(name="item_generator", sequenceName = "item_seq", initialValue=2, allocationSize=1)
 	private Long ItemID;
 	
 	@Column
