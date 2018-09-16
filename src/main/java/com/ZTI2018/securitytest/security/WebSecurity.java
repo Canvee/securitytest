@@ -1,6 +1,7 @@
 package com.ZTI2018.securitytest.security;
 
 import java.security.Principal;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import com.ZTI2018.securitytest.models.AppUser;
+import com.ZTI2018.securitytest.models.Item;
+import com.ZTI2018.securitytest.models.ItemList;
 import com.ZTI2018.securitytest.repositories.ItemRepository;
 import com.ZTI2018.securitytest.repositories.ListRepository;
 import com.ZTI2018.securitytest.repositories.UserRepository;
@@ -52,9 +55,24 @@ public class WebSecurity {
 		return user.getId() == id;
 	}
 	
-	public boolean checkListId(Authentication authentication, int id) {
+	public boolean checkListId(Authentication authentication, Long id) {
 		// get owner 
+		Optional<ItemList> optList = listRepository.findById(id);
+		ItemList list = optList.get();
+		AppUser user = list.getAppuser();
 		// compare list owner with authentication
-		return true;
+		System.out.println(user.getUsername() + " == " + authentication.getName());
+		return user.getUsername().equals(authentication.getName());
 	}
+	
+	public boolean checkitemId(Authentication authentication, Long id) {
+		// get owner 
+		Optional<Item> optItem = itemRepository.findById(id);
+		Item item = optItem.get();
+		AppUser user = item.getItemList().getAppuser();
+		// compare list owner with authentication
+		System.out.println(user.getUsername() + " == " + authentication.getName());
+		return user.getUsername().equals(authentication.getName());
+	}
+
 }

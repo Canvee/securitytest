@@ -1,5 +1,6 @@
 package com.ZTI2018.securitytest;
 
+
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
@@ -49,6 +50,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 ////                .withUser("demo").password("{noop}test2").roles("ADMIN");
 //    }
 	
+//	@Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**");
+//    }
+	
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
@@ -66,19 +72,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	public void configure(HttpSecurity httpSecurity) throws Exception {
 		//httpSecurity.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic();
 		httpSecurity
+		.cors().and()
 			.authorizeRequests()
 				// enable registration for all users
 				// TODO make it available only for anonymous users
 				.antMatchers("/user/register").permitAll()
+				.antMatchers("/api").permitAll()
 				.antMatchers(HttpMethod.GET, "**/api/users").hasRole("ADMIN")
 				.antMatchers("/api/users/{userId}/**").access("@webSecurity.checkUserId(authentication,#userId)")
 				.antMatchers("/api/lists/{listId}/**").access("@webSecurity.checkListId(authentication,#listId)")
-				.anyRequest().fullyAuthenticated().and()
+				.antMatchers("/api/items/{itemId}/**").access("@webSecurity.checkitemId(authentication,#itemId)")
+				// all other requests
+				.anyRequest().fullyAuthenticated()
+				//.anyRequest().hasRole("ADMIN")
+				.and()
 			// if filter needed
 			//.addFilterAfter(testFilter(), BasicAuthenticationFilter.class)
 			.httpBasic();
 		httpSecurity.csrf().disable();
 	}
+
 	
 	  @Bean
 	    public DaoAuthenticationProvider authenticationProvider() {
@@ -107,4 +120,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	    TestFilter testFilter() {
 	    	return new TestFilter();
 	    }
+	    
+//	    @Bean
+//	    CorsConfigurationSource corsConfigurationSource() {
+//			CorsConfiguration configuration = new CorsConfiguration();
+//			configuration.setAllowedOrigins(Arrays.asList("https://localhost:8080"));
+//			configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+//			UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//			source.registerCorsConfiguration("/**", configuration);
+//			return source;
+//		}
+
 }

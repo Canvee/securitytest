@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import com.ZTI2018.securitytest.models.AppUser;
 
 
-@CrossOrigin
+@CrossOrigin(origins = "*")
+//@CrossOrigin
 @RepositoryRestResource(collectionResourceRel="users", path="users")
 public interface UserRepository extends JpaRepository<AppUser, Long>{
 

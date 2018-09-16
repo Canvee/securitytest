@@ -21,9 +21,9 @@ import com.ZTI2018.securitytest.models.AppUserDTO;
 import com.ZTI2018.securitytest.models.UserAuthority;
 import com.ZTI2018.securitytest.repositories.UserRepository;
 
-@RestController
-@RequestMapping("/user")
 @CrossOrigin
+@RestController
+@RequestMapping("/api/user")
 public class RegistrationController {
 	
 	@Autowired

@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.ZTI2018.securitytest.models.Item;
 
-@CrossOrigin
+@CrossOrigin(origins = "*")
+//@CrossOrigin
 @RepositoryRestResource(collectionResourceRel="items", path="items")
 public interface ItemRepository extends JpaRepository<Item, Long>
 {

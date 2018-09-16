@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Item {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_generator")
-	@SequenceGenerator(name="item_generator", sequenceName = "item_seq", initialValue=2, allocationSize=1)
+	@SequenceGenerator(name="item_generator", sequenceName = "item_seq", initialValue=3, allocationSize=1)
 	private Long ItemID;
 	
 	@Column
