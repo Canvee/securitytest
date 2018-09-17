@@ -11,9 +11,20 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.filter.GenericFilterBean;
 
+/**
+ * TestFilter implementing GenericFilterBean which extends basic Filter class
+ * 
+ * Annotation: WebFilter shows to which urlPattern the filter is applied
+ * 
+ * @author canvee
+ *
+ */
 @WebFilter(urlPatterns = "/api/users")
 public class TestFilter extends GenericFilterBean {
-
+	
+	/**
+	 * Filter allows only post requests on given exact uri 
+	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException 

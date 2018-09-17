@@ -13,14 +13,34 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+/**
+ * AppConfiguration sets all configuration needed by the server side app
+ * returns
+ * <ul>
+ * 	<li> DataSource
+ * 	<li> LocalContainerEntityManagerFactoryBean
+ * </ul>
+ * @author canvee
+ *
+ */
 @PropertySource("classpath:application.properties")
 @EnableJpaRepositories(basePackages = { "com.ZTI2018.securitytest.repositories" })
 @Import(SecurityConfiguration.class)
-
 public class AppConfiguration extends WebSecurityConfigurerAdapter{
+	
 	@Autowired
     private Environment env;
-
+	
+	
+	
+	
+	/**
+	 * Bean sets DataSource object to connect with the external database
+	 * Values are read by the @see org.springframework.core.env.Environment field
+	 * Parameters are set in the "src/main/resources/application.propperties" file
+	 * 
+	 * @return 	dataSource object
+	 */
     @Bean
     public DataSource dataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -31,6 +51,13 @@ public class AppConfiguration extends WebSecurityConfigurerAdapter{
         return dataSource;
     }
     
+    
+    
+    /**
+     * Bean sets LocalContainerEntityManagerFactoryBean to configure hibernate helping to configure the classes
+     * 
+     * @return LocalContainerEntityManagerFactoryBean with configuration
+     */
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();

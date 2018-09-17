@@ -22,7 +22,17 @@ import com.ZTI2018.securitytest.filter.TestFilter;
 import com.ZTI2018.securitytest.security.CustomUserDetailsService;
 import com.ZTI2018.securitytest.security.WebSecurity;
 
-
+/**
+ * Main security configuration class
+ * <p>
+ * Manages
+ * <ul>
+ * 	<li> AuthenticationManagerBuilder
+ * 	<li> HttpSecurity
+ * </ul>
+ * 
+ * @author canvee
+ */
 
 @Configuration
 @EnableWebSecurity
@@ -40,21 +50,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
         userDetailsService = applicationContext.getBean(CustomUserDetailsService.class);
     }
 	
-//	@Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//		auth.jdbcAuthentication().dataSource(dataSource)
-//		.usersByUsernameQuery("select username,password,enabled from users where username = ?")
-//		.authoritiesByUsernameQuery("select username,authority from authorities where username = ?");
-////        auth.inMemoryAuthentication()
-////                .withUser("ajay").password("{noop}test").roles("USER").and()
-////                .withUser("demo").password("{noop}test2").roles("ADMIN");
-//    }
-	
-//	@Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**");
-//    }
-	
+	/**
+	 * Function configures the AuthenticationManagerBuilder
+	 * Authentication happens threw the custom userDetailsService
+	 * Password is encoded
+	 * Users are stored in the dataSource database
+	 */
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
@@ -65,14 +66,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
             .dataSource(dataSource)
             .usersByUsernameQuery("select username,password,enabled from users where username = ?")
     		.authoritiesByUsernameQuery("select username,authority from authorities where username = ?");
-//        System.out.println(encoder().encode("admin"));
     }
 	
+    /**
+     * The function configures and controls the Authorisation of the users
+     * Using basic http authentication
+     */
 	@Override
 	public void configure(HttpSecurity httpSecurity) throws Exception {
-		//httpSecurity.authorizeRequests().anyRequest().fullyAuthenticated().and().httpBasic();
 		httpSecurity
-		.cors().and()
+			.cors().and()
 			.authorizeRequests()
 				// enable registration for all users
 				// TODO make it available only for anonymous users
@@ -92,43 +95,60 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 		httpSecurity.csrf().disable();
 	}
 
+	/**
+	 * Data acces object provider sets the userDetailsService and the passwordEncoder
+	 * Used internal by Spring Security
+	 * @return DaoAuthenticationProvider
+	 */
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+	    final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+	    authProvider.setUserDetailsService(userDetailsService);
+	    authProvider.setPasswordEncoder(encoder());
+	    return authProvider;
+	}
 	
-	  @Bean
-	    public DaoAuthenticationProvider authenticationProvider() {
-	        final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-	        authProvider.setUserDetailsService(userDetailsService);
-	        authProvider.setPasswordEncoder(encoder());
-	        return authProvider;
-	    }
-
-	    @Bean
-	    public PasswordEncoder encoder() {
-	        return new BCryptPasswordEncoder(11);
-	    }
-	    
-	    @Bean
-	    public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
-	        return new SecurityEvaluationContextExtension();
-	    }
-	    
-	    @Bean
-	    public WebSecurity webSecurity() {
-	    	return new WebSecurity();
-	    }
-	    
-	    @Bean 
-	    TestFilter testFilter() {
-	    	return new TestFilter();
-	    }
-	    
-//	    @Bean
-//	    CorsConfigurationSource corsConfigurationSource() {
-//			CorsConfiguration configuration = new CorsConfiguration();
-//			configuration.setAllowedOrigins(Arrays.asList("https://localhost:8080"));
-//			configuration.setAllowedMethods(Arrays.asList("GET","POST"));
-//			UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//			source.registerCorsConfiguration("/**", configuration);
-//			return source;
-//		}
-
+	/**
+	 * PasswordEncoder bean stores centrally the paswordEncoder object
+	 * @return password encoder instance
+	 */
+	@Bean
+	public PasswordEncoder encoder() {
+		return new BCryptPasswordEncoder(11);
+	}
+	
+	/**
+	 * SecurityEvaluationContextExtensions creates instance of class
+	 * For internal use for Spring Security
+	 * @return returns instance of SecurityEvaluetionContextExtension
+	 */
+	@Bean
+	public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
+		return new SecurityEvaluationContextExtension();
+	}
+	
+	/**
+	 * webSecurity function returns object holding functions controlling access for specific URIs in configure(HttpSecurity httpSecurity)
+	 * 
+	 * @see configure(HttpSecurity httpSecurity)
+	 * @return webSecurity instance
+	 */
+	@Bean
+	public WebSecurity webSecurity() {
+		return new WebSecurity();
+	}
+	
+	/**
+	 * testFilter creates filter
+	 * example for spring security filter usage on special URI
+	 * For internal Spring Security usage
+	 * To use filter @ServletComponentScan annotation needed on main Spring Boot class with main function
+	 * 
+	 * @see SecuritytestApplication
+	 * @return TestFilter instance
+	 */
+	@Bean 
+	TestFilter testFilter() {
+		return new TestFilter();
+	}
 }

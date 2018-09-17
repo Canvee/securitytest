@@ -21,6 +21,13 @@ import com.ZTI2018.securitytest.models.AppUserDTO;
 import com.ZTI2018.securitytest.models.UserAuthority;
 import com.ZTI2018.securitytest.repositories.UserRepository;
 
+/**
+ * Class exposing REST POST method for user registration
+ * 
+ * @author canvee
+ *
+ */
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/user")
@@ -37,9 +44,14 @@ public class RegistrationController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 	
+	/**
+	 * Function receiving DTO object, evaluating if user is not already created and inserts to UserRepository
+	 * 
+	 * @param userdto User data transmission object which is recieved from client
+	 * @return
+	 */
 	@PostMapping("/register")
     public ResponseEntity<String> signUp(@RequestBody AppUserDTO userdto) {
-		
 		if (userRepository.existsByUsername( userdto.getUsername() )) {
             return new ResponseEntity<>("Username already exists", HttpStatus.CONFLICT);
         }

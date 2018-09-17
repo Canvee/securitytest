@@ -1,5 +1,12 @@
 package com.ZTI2018.securitytest.models;
 
+/**
+ * AppUser Data Transer Object
+ * Creates transfer object for transmission between client and server
+ * 
+ * @author canvee
+ *
+ */
 public class AppUserDTO {
 	private String mail;
 	private String username;
